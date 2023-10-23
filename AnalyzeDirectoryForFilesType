@@ -1,0 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string Dir = @"C:\lazarus"; ////// Выбрал этот ибо файлов у меня тут мало
+
+        Dictionary<string, int> ExtCount = new Dictionary<string, int>();
+
+        AnalDirectory(Dir, ExtCount);      ///Это типо сокращение анализ XDDD
+
+        Console.WriteLine("┌─────────────────────┬─────────────────┐");
+        Console.WriteLine("│ Расширение файла    │  Кол-во файлов  │");
+        Console.WriteLine("├─────────────────────┼─────────────────┤");
+
+        foreach (var entry in ExtCount)
+        {
+            Console.WriteLine($"│ {entry.Key,-19} │ {entry.Value,-16}│");
+        }
+
+        Console.WriteLine("+─────────────────────┴─────────────────+");
+
+        Console.ReadLine();
+    }
+
+    static void AnalDirectory(string path, Dictionary<string, int> ExtcCount)
+    {
+        try
+        {
+            foreach (string filePath in Directory.GetFiles(path))
+            {
+                string Ext = Path.GetExtension(filePath);
+
+                if (!ExtcCount.ContainsKey(Ext))
+                {
+                    ExtcCount[Ext] = 1;
+                }
+                else
+                {
+                    ExtcCount[Ext]++;
+                }
+            }
+
+            foreach (string subDirectory in Directory.GetDirectories(path))
+            {
+                AnalDirectory(subDirectory, ExtcCount);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обработке каталога {path}: {ex.Message}");
+        }
+    }
+}
